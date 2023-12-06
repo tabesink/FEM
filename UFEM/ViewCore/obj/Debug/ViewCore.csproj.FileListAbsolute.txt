@@ -1,0 +1,11 @@
+F:\2024\Projects\FEM\UFEM\ViewCore\bin\Debug\ViewCore.dll
+F:\2024\Projects\FEM\UFEM\ViewCore\bin\Debug\ViewCore.pdb
+F:\2024\Projects\FEM\UFEM\ViewCore\bin\Debug\Global.dll
+F:\2024\Projects\FEM\UFEM\ViewCore\bin\Debug\STRCore.dll
+F:\2024\Projects\FEM\UFEM\ViewCore\bin\Debug\Global.pdb
+F:\2024\Projects\FEM\UFEM\ViewCore\bin\Debug\STRCore.pdb
+F:\2024\Projects\FEM\UFEM\ViewCore\obj\Debug\ViewCore.csproj.AssemblyReference.cache
+F:\2024\Projects\FEM\UFEM\ViewCore\obj\Debug\ViewCore.csproj.CoreCompileInputs.cache
+F:\2024\Projects\FEM\UFEM\ViewCore\obj\Debug\ViewCore.csproj.CopyComplete
+F:\2024\Projects\FEM\UFEM\ViewCore\obj\Debug\ViewCore.dll
+F:\2024\Projects\FEM\UFEM\ViewCore\obj\Debug\ViewCore.pdb

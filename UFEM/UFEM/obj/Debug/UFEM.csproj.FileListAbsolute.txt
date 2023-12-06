@@ -1,0 +1,14 @@
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\UFEM.exe.config
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\UFEM.exe
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\UFEM.pdb
+F:\2024\Projects\FEM\UFEM\UFEM\obj\Debug\UFEM.csproj.AssemblyReference.cache
+F:\2024\Projects\FEM\UFEM\UFEM\obj\Debug\UFEM.csproj.CoreCompileInputs.cache
+F:\2024\Projects\FEM\UFEM\UFEM\obj\Debug\UFEM.exe
+F:\2024\Projects\FEM\UFEM\UFEM\obj\Debug\UFEM.pdb
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\Global.dll
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\STRCore.dll
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\ViewCore.dll
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\Global.pdb
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\STRCore.pdb
+F:\2024\Projects\FEM\UFEM\UFEM\bin\Debug\ViewCore.pdb
+F:\2024\Projects\FEM\UFEM\UFEM\obj\Debug\UFEM.csproj.CopyComplete
