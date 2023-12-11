@@ -41,7 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\Vectors.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="STRController.cs" />
+    <Compile Include="STRElements\STRLine.cs" />
+    <Compile Include="STRElements\STRMaterial.cs" />
+    <Compile Include="STRElements\STRNode.cs" />
+    <Compile Include="STRElements\STRRelease.cs" />
+    <Compile Include="STRElements\STRSection.cs" />
+    <Compile Include="STRElements\STRSupport.cs" />
+    <Compile Include="STRStructure.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Global\Global.csproj">

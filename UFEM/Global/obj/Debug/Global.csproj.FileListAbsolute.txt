@@ -3,3 +3,4 @@ F:\2024\Projects\FEM\UFEM\Global\bin\Debug\Global.pdb
 F:\2024\Projects\FEM\UFEM\Global\obj\Debug\Global.csproj.CoreCompileInputs.cache
 F:\2024\Projects\FEM\UFEM\Global\obj\Debug\Global.dll
 F:\2024\Projects\FEM\UFEM\Global\obj\Debug\Global.pdb
+F:\2024\Projects\FEM\UFEM\Global\obj\Debug\Global.csproj.AssemblyReference.cache
