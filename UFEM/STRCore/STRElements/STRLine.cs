@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STRCore.FEMElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -119,6 +120,16 @@ namespace STRCore.STRElements
             set { vz = value; }
         }
 
+        private List<FEMBar> fEMBars;
+        /// <summary>
+        /// A list of FEMBars
+        /// </summary>
+        public List<FEMBar> FEMBars
+        {
+            get { return fEMBars; }
+            set { fEMBars = value; }
+        }
+
         public STRLine(int id, STRNode node1, STRNode node2)
         {
             this.id = id;
@@ -138,14 +149,14 @@ namespace STRCore.STRElements
             vx[0] = node2.X - node1.X;
             vx[1] = node2.Y - node1.Y;
             vx[2] = node2.Z - node1.Z;
-            length = Helpers.Vectors.Length(vx);
-            Helpers.Vectors.Normalize(ref vx);
+            length = Helpers.Vector.Length(vx);
+            Helpers.Vector.Normalize(ref vx);
 
             vx = new double[3];
             vx[0] = node2.X - node1.X;
             vx[1] = node2.Y - node1.Y;
             vx[2] = node2.Z - node1.Z;
-            Helpers.Vectors.Normalize(ref vx);
+            Helpers.Vector.Normalize(ref vx);
 
             // catch special cases
             bool isParallelToZ = false;
@@ -154,10 +165,10 @@ namespace STRCore.STRElements
             if (!isParallelToZ)
             {
                 double[] globalZ = new double[] { 0, 0, 1 };
-                vy = Helpers.Vectors.CrossProduct(globalZ, vx);
-                Helpers.Vectors.Normalize(ref vy);
-                vz = Helpers.Vectors.CrossProduct(vx, vy);
-                Helpers.Vectors.Normalize(ref vz);
+                vy = Helpers.Vector.CrossProduct(globalZ, vx);
+                Helpers.Vector.Normalize(ref vy);
+                vz = Helpers.Vector.CrossProduct(vx, vy);
+                Helpers.Vector.Normalize(ref vz);
 
             }
             else 
@@ -165,14 +176,14 @@ namespace STRCore.STRElements
                 if (vx[2] < Global.Constants.Epsilon)
                 {
                     vy = new double[] { 0, 1, 0 };
-                    vz = Helpers.Vectors.CrossProduct(vx, vy);
-                    Helpers.Vectors.Normalize(ref vz);
+                    vz = Helpers.Vector.CrossProduct(vx, vy);
+                    Helpers.Vector.Normalize(ref vz);
                 }
                 else
                 {
                     vy = new double[] { 0, 1, 0 };
-                    vz = Helpers.Vectors.CrossProduct(vx, vy);
-                    Helpers.Vectors.Normalize(ref vz);
+                    vz = Helpers.Vector.CrossProduct(vx, vy);
+                    Helpers.Vector.Normalize(ref vz);
                 }
             }
 
@@ -184,7 +195,10 @@ namespace STRCore.STRElements
                 "L = " + length.ToString("0.00") + "\n" +
                 "vx = [" + vx[0].ToString("0.00") + ", " + vx[1].ToString("0.00") + ", " + vx[2].ToString("0.00") + "]\n" +
                 "vx = [" + vy[0].ToString("0.00") + ", " + vy[1].ToString("0.00") + ", " + vy[2].ToString("0.00") + "]\n" +
-                "vx = [" + vz[0].ToString("0.00") + ", " + vz[1].ToString("0.00") + ", " + vz[2].ToString("0.00") + "]";
+                "vx = [" + vz[0].ToString("0.00") + ", " + vz[1].ToString("0.00") + ", " + vz[2].ToString("0.00") + "]\n" +
+                "Section: " + (section == null? "n/a" : section.ToString()) + "\n" + 
+                "Material: " + (material == null ? "n/a" : material.ToString()) + "\n" + 
+                "Release: " + (release == null ? "n/a" : release.ToString());
         }
 
     }

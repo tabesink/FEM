@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace STRCore.Helpers
 {
-    internal static class Vectors // keep static, don't want to instantiate any members of this class
+    internal static class Vector // keep static, don't want to instantiate any members of this class
     {
         internal static void Normalize(ref double[] vin)
         {

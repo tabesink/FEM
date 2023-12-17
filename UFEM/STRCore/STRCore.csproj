@@ -41,10 +41,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helpers\Vectors.cs" />
+    <Compile Include="FEMElements\FEMBar.cs" />
+    <Compile Include="FEMElements\FEMBarSpring.cs" />
+    <Compile Include="FEMElements\FEMNode.cs" />
+    <Compile Include="Helpers\LineSegment.cs" />
+    <Compile Include="Helpers\ModelHelper.cs" />
+    <Compile Include="Helpers\Vector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="STRController.cs" />
     <Compile Include="STRElements\STRLine.cs" />
+    <Compile Include="STRElements\STRLoad.cs" />
+    <Compile Include="STRElements\STRLoadCase.cs" />
+    <Compile Include="STRElements\STRLoadCombination.cs" />
+    <Compile Include="STRElements\STRLoadLinearConcentrated.cs" />
+    <Compile Include="STRElements\STRLoadLinearDistributed.cs" />
+    <Compile Include="STRElements\STRLoadNodal.cs" />
     <Compile Include="STRElements\STRMaterial.cs" />
     <Compile Include="STRElements\STRNode.cs" />
     <Compile Include="STRElements\STRRelease.cs" />
