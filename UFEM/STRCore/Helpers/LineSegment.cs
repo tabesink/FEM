@@ -147,6 +147,31 @@ namespace STRCore.Helpers
 			return new double[] { x11, y11, z11 };
 		}
 
+        internal double GetTValue(double x, double y, double z)
+        {
+			// paramteric line eq:
+			// x = at + x0
+			// y = bt + y0
+			// z = ct + z0
+			double a = vx[0];
+			double b = vx[1];
+			double c = vx[2];
+
+			double x0 = x1;
+			double y0 = y1;
+			double z0 = z1;
+
+			double t = 0;
+
+			if (Math.Abs(a) > Global.Constants.Epsilon)
+				t = (x - x0) / a;
+			else if (Math.Abs(b) > Global.Constants.Epsilon)
+				t = (y - y0) / b;
+			else if (Math.Abs(c) > Global.Constants.Epsilon)
+				t = (z - z0) / c;
+			return t;
+		}
+
 		internal bool IsOnLineSegment(double x, double y, double z)
 		{
 			//line equation 

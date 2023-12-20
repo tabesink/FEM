@@ -79,6 +79,54 @@ namespace STRCore
             structure.Releases.Add(output);
             return output;
         }
+        internal FEMBarSpring DefineFEMBarSpring(FEMNode femMasterNode, FEMNode femSlaveNode)
+        {
+            FEMBarSpring possibleDuplicate = (FEMBarSpring)GetFEMBar(femMasterNode, femSlaveNode);
+            if (possibleDuplicate != null) return possibleDuplicate;
+
+            double[] vx = new double[3];
+            double[] vy = new double[3];
+            double[] vz = new double[3];
+            vx[0] = femSlaveNode.X - femMasterNode.X;
+            vx[1] = femSlaveNode.Y - femMasterNode.Y;
+            vx[2] = femSlaveNode.Z - femMasterNode.Z;
+            double length = Helpers.Vector.Length(vx);
+            Helpers.Vector.Normalize(ref vx);
+
+            // catch special cases
+            bool isParallelToZ = false;
+            if (Math.Abs(vx[0]) < Global.Constants.FEMEpsilon && Math.Abs(vx[1]) < Global.Constants.FEMEpsilon)
+                isParallelToZ = true;
+            if (!isParallelToZ)
+            {
+                double[] globalZ = new double[] { 0, 0, 1 };
+                vy = Helpers.Vector.CrossProduct(globalZ, vx);
+                Helpers.Vector.Normalize(ref vy);
+                vz = Helpers.Vector.CrossProduct(vx, vy);
+                Helpers.Vector.Normalize(ref vz);
+
+            }
+            else
+            {
+                if (vx[2] < Global.Constants.FEMEpsilon)
+                {
+                    vy = new double[] { 0, 1, 0 };
+                    vz = Helpers.Vector.CrossProduct(vx, vy);
+                    Helpers.Vector.Normalize(ref vz);
+                }
+                else
+                {
+                    vy = new double[] { 0, 1, 0 };
+                    vz = Helpers.Vector.CrossProduct(vx, vy);
+                    Helpers.Vector.Normalize(ref vz);
+                }
+            }
+
+            int id = GetNextFEMBarId();
+            FEMBarSpring output = new FEMBarSpring(id, femMasterNode, femSlaveNode, length, vx, vy, vz, null, null);
+            STRController.CurrentController.Structure.FEMBars.Add(output);
+            return output;
+        }
         public void ModifySTRRelease(STRRelease target, string name, double kUxStart, double kUyStart, double kUzStart, double kRxStart, double kRyStart, double kRzStart, double kUxEnd, double kUyEnd, double kUzEnd, double kRxEnd, double kRyEnd, double kRzEnd)
         {
             target.Name = name;
@@ -96,12 +144,6 @@ namespace STRCore
             target.KRyEnd = kRyEnd;
             target.KRzEnd = kRzEnd;
         }
-
-        internal FEMBarSpring DefineFEMBarSpring(FEMNode femMasterNode, FEMNode femSlaveNode)
-        {
-            throw new NotImplementedException();
-        }
-
         public void DeleteSTRRelease(STRRelease target)
         {
             if (structure.Releases.Exists(item => item.Id == target.Id))
@@ -144,6 +186,56 @@ namespace STRCore
                 }
             }
         }
+
+        internal FEMBarBeam DefineFEMBarBeam(FEMNode femNode1N, FEMNode femNode2N, STRSection section, STRMaterial material)
+        {
+            FEMBarBeam possibleDuplicate = (FEMBarBeam)GetFEMBar(femNode1N, femNode2N);
+            if (possibleDuplicate != null) return possibleDuplicate;
+
+            double[] vx = new double[3];
+            double[] vy = new double[3];
+            double[] vz = new double[3];
+            vx[0] = femNode2N.X - femNode1N.X;
+            vx[1] = femNode2N.Y - femNode1N.Y;
+            vx[2] = femNode2N.Z - femNode1N.Z;
+            double length = Helpers.Vector.Length(vx);
+            Helpers.Vector.Normalize(ref vx);
+
+            // catch special cases
+            bool isParallelToZ = false;
+            if (Math.Abs(vx[0]) < Global.Constants.FEMEpsilon && Math.Abs(vx[1]) < Global.Constants.FEMEpsilon)
+                isParallelToZ = true;
+            if (!isParallelToZ)
+            {
+                double[] globalZ = new double[] { 0, 0, 1 };
+                vy = Helpers.Vector.CrossProduct(globalZ, vx);
+                Helpers.Vector.Normalize(ref vy);
+                vz = Helpers.Vector.CrossProduct(vx, vy);
+                Helpers.Vector.Normalize(ref vz);
+
+            }
+            else
+            {
+                if (vx[2] < Global.Constants.FEMEpsilon)
+                {
+                    vy = new double[] { 0, 1, 0 };
+                    vz = Helpers.Vector.CrossProduct(vx, vy);
+                    Helpers.Vector.Normalize(ref vz);
+                }
+                else
+                {
+                    vy = new double[] { 0, 1, 0 };
+                    vz = Helpers.Vector.CrossProduct(vx, vy);
+                    Helpers.Vector.Normalize(ref vz);
+                }
+            }
+
+            int id = GetNextFEMBarId();
+            FEMBarBeam output = new FEMBarBeam(id, femNode1N, femNode2N, length, vx, vy, vz, section, material);
+            STRController.CurrentController.Structure.FEMBars.Add(output);
+            return output;
+        }
+
         public STRSection DefineSTRSection(string name, double area, double ix, double iy, double iz)
         {
             int id = GetNextSectionId();
@@ -255,8 +347,42 @@ namespace STRCore
                     DeleteSTRLine(affectedLine);
             }
         }
+        private STRLine GetSTRLine(STRNode node1, STRNode node2)
+        {
+            STRLine output = null;
+            foreach (STRLine line in STRController.CurrentController.Structure.Lines)
+            {
+                if (line.Node1.Id == node1.Id && line.Node2.Id == node2.Id)
+                {
+                    return line;
+                }
+                if (line.Node2.Id == node1.Id && line.Node1.Id == node2.Id)
+                {
+                    return line;
+                }
+            }
+            return output;
+        }
+        private FEMBar GetFEMBar(FEMNode femNode1, FEMNode femNode2)
+        {
+            FEMBar output = null;
+            foreach (FEMBar femBar in STRController.CurrentController.Structure.FEMBars)
+            {
+                if (femBar.FEMNode1.Id == femNode1.Id && femBar.FEMNode2.Id == femNode2.Id)
+                {
+                    return femBar;
+                }
+                if (femBar.FEMNode2.Id == femNode1.Id && femBar.FEMNode1.Id == femNode2.Id)
+                {
+                    return femBar;
+                }
+            }
+            return output;
+        }
         public STRLine DefineSTRLine(STRNode node1, STRNode node2)
         {
+            STRLine possibleDuplicate = GetSTRLine(node1, node2);
+            if (possibleDuplicate != null) return possibleDuplicate;
             int id = GetNextLineId();
             STRLine output = new STRLine(id, node1, node2);
             structure.Lines.Add(output);
@@ -452,6 +578,11 @@ namespace STRCore
         {
             structure.LastFEMNodeId++;
             return structure.LastFEMNodeId;
+        }
+        private int GetNextFEMBarId()
+        {
+            structure.LastFEMBarId++;
+            return structure.LastFEMBarId;
         }
         private int GetNextLineId()
         {

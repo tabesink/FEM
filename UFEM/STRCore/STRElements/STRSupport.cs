@@ -220,17 +220,17 @@ namespace STRCore.STRElements
 
 
             if (isRxActive)
-                kRx = Global.Constants.RigidRU;
+                kRx = Global.Constants.RigidKR;
             else
                 kRx = Global.Constants.FreeRU;
 
             if (isRyActive)
-                kRy = Global.Constants.RigidRU;
+                kRy = Global.Constants.RigidKR;
             else
                 kRy = Global.Constants.FreeRU;
 
             if (isRzActive)
-                kRz = Global.Constants.RigidRU;
+                kRz = Global.Constants.RigidKR;
             else
                 kRz = Global.Constants.FreeRU;
         }
@@ -254,17 +254,17 @@ namespace STRCore.STRElements
 
 
             if (isRxActive)
-                kRx = Global.Constants.RigidRU;
+                kRx = Global.Constants.RigidKR;
             else
                 kRx = Global.Constants.FreeRU;
 
             if (isRyActive)
-                kRy = Global.Constants.RigidRU;
+                kRy = Global.Constants.RigidKR;
             else
                 kRy = Global.Constants.FreeRU;
 
             if (isRzActive)
-                kRz = Global.Constants.RigidRU;
+                kRz = Global.Constants.RigidKR;
             else
                 kRz = Global.Constants.FreeRU;
         }

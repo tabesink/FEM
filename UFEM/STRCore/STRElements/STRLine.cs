@@ -152,12 +152,6 @@ namespace STRCore.STRElements
             length = Helpers.Vector.Length(vx);
             Helpers.Vector.Normalize(ref vx);
 
-            vx = new double[3];
-            vx[0] = node2.X - node1.X;
-            vx[1] = node2.Y - node1.Y;
-            vx[2] = node2.Z - node1.Z;
-            Helpers.Vector.Normalize(ref vx);
-
             // catch special cases
             bool isParallelToZ = false;
             if (Math.Abs(vx[0]) < Global.Constants.Epsilon && Math.Abs(vx[1]) < Global.Constants.Epsilon)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using STRCore.STRElements;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace STRCore.FEMElements
 {
-    class FEMBarSpring
+    class FEMBarSpring: FEMBar
     {
         private int id;
         /// <summary>
@@ -87,6 +88,10 @@ namespace STRCore.FEMElements
         {
             get { return kRz; }
             set { kRz = value; }
+        }
+        internal FEMBarSpring(int id, FEMNode femNode1, FEMNode femNode2, double length, double[] vx, double[] vy, double[] vz, STRSection section, STRMaterial material): base(id, femNode1, femNode2, length, vx, vy, vz, section, material)
+        {
+            
         }
     }
 }

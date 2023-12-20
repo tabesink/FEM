@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FEMElements\FEMBar.cs" />
+    <Compile Include="FEMElements\FEMBarBeam.cs" />
     <Compile Include="FEMElements\FEMBarSpring.cs" />
     <Compile Include="FEMElements\FEMNode.cs" />
     <Compile Include="Helpers\LineSegment.cs" />

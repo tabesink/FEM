@@ -25,6 +25,8 @@ namespace UFEM
             STRNode node3 = STRController.CurrentController.DefineSTRNode(0, 0, 0);
 
             STRLine line1 = STRController.CurrentController.DefineSTRLine(node1, node2);
+            STRLine line2 = STRController.CurrentController.DefineSTRLine(node1, node2);
+            STRLine line3 = STRController.CurrentController.DefineSTRLine(node2, node1);
 
             STRLoadCase dl1 = STRController.CurrentController.DefineSTRLoadCase("dead load", Global.Enums.LoadCaseTypes.Dead);
             STRLoadCombination uls1 = STRController.CurrentController.DefineSTRCombinationCase("ULS", Global.Enums.LoadCombinationTypes.ULS);

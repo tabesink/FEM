@@ -38,8 +38,163 @@ namespace STRCore.Helpers
         }
         private static void GenerateFEMObjectsFromSTRLines()
         {
+            // Cycle through all the STRLines
+            for (int i = 0; i < STRController.CurrentController.Structure.Lines.Count; i++)
+            {
+                // Make sure that no isolated nodes exisit
 
+                // Search for all nodes that are on a line
+                STRLine line = STRController.CurrentController.Structure.Lines[1];
+                STRNode node1 = line.Node1;
+                STRNode node2 = line.Node2;
+
+                LineSegment segment = new LineSegment(node1.X, node1.Y, node1.Z, node2.X, node2.Y, node2.Z);
+                List<STRNode> nodesOnSegmentSorted = GetSortedSTRNodes(segment);
+                List<FEMNode> femNodesOnSegmentSorted = new List<FEMNode>();
+
+                for (int j = 0; j < nodesOnSegmentSorted.Count; j++)
+                {
+                    STRNode strNode = nodesOnSegmentSorted[j];
+                    FEMNode femNode = STRController.CurrentController.DefineFEMNode(strNode.X, strNode.Y, strNode.Z);
+
+                    femNode.CorrespondingSTRNode = strNode;
+                    femNode.IsMasterNode = true;
+                    femNode.IsSlaveNode = false;
+                    femNode.IsSupportNode = false;
+                    femNode.MasterFEMNode = null;
+                    femNode.SlaveFEMNode = null;
+
+                    femNodesOnSegmentSorted.Add(femNode);
+                }
+
+                // Deal with releases 
+                int startIndex = 0;
+                int endIndex = femNodesOnSegmentSorted.Count - 1;
+
+                if (line.Release != null)
+                {
+                    // The line got released
+                    STRRelease release = line.Release;
+                    bool isStartReleased = release.KUxStart != Global.Constants.RigidKU ||
+                        release.KUyStart != Global.Constants.RigidKU ||
+                        release.KUzStart != Global.Constants.RigidKU ||
+                        release.KRxStart != Global.Constants.RigidKR ||
+                        release.KRyStart != Global.Constants.RigidKR ||
+                        release.KRzStart != Global.Constants.RigidKR;
+
+                    bool isEndReleased = release.KUxEnd != Global.Constants.RigidKU ||
+                        release.KUyEnd != Global.Constants.RigidKU ||
+                        release.KUzEnd != Global.Constants.RigidKU ||
+                        release.KRxEnd != Global.Constants.RigidKR ||
+                        release.KRyEnd != Global.Constants.RigidKR ||
+                        release.KRzEnd != Global.Constants.RigidKR;
+
+                    if (isStartReleased)
+                    {
+                        // Define a small longitudinal shift
+                        double[] Vx_1 = line.Vx;
+                        double[] vx = new double[3];
+                        vx[0] = Vx_1[0] * 10.0 * Global.Constants.Epsilon;
+                        vx[1] = Vx_1[1] * 10.0 * Global.Constants.Epsilon;
+                        vx[2] = Vx_1[2] * 10.0 * Global.Constants.Epsilon;
+
+                        FEMNode firstNode = femNodesOnSegmentSorted[0];
+                        FEMNode femNode = STRController.CurrentController.DefineFEMNode(firstNode.X + vx[0], firstNode.Y + vx[1], firstNode.Z + vx[2]);
+
+                        femNode.CorrespondingSTRNode = firstNode.CorrespondingSTRNode;
+                        femNode.IsMasterNode = false;
+                        femNode.IsSlaveNode = true;
+                        femNode.MasterFEMNode = firstNode;
+                        femNodesOnSegmentSorted.Insert(1, femNode);
+                        startIndex++;
+                        endIndex++;
+
+                        FEMBarSpring femBar = STRController.CurrentController.DefineFEMBarSpring(firstNode, femNode);
+                        femBar.KUx = release.KUxStart;
+                        femBar.KUy = release.KUyStart;
+                        femBar.KUz = release.KUzStart;
+                        femBar.KRx = release.KRxStart;
+                        femBar.KRy = release.KRyStart;
+                        femBar.KRz = release.KRzStart;
+                        femBar.CorrespondingSTRLine = line;
+
+                    }
+                    if (isEndReleased)
+                    {
+                        double[] Vx_1 = line.Vx;
+                        double[] vx = new double[3];
+                        vx[0] = Vx_1[0] * -10.0 * Global.Constants.Epsilon;
+                        vx[1] = Vx_1[1] * -10.0 * Global.Constants.Epsilon;
+                        vx[2] = Vx_1[2] * -10.0 * Global.Constants.Epsilon;
+
+                        FEMNode lastNode = femNodesOnSegmentSorted[femNodesOnSegmentSorted.Count - 1];
+                        FEMNode femNode = STRController.CurrentController.DefineFEMNode(lastNode.X + vx[0], lastNode.Y + vx[1], lastNode.Z + vx[2]);
+                        femNode.CorrespondingSTRNode = lastNode.CorrespondingSTRNode;
+                        femNode.IsMasterNode = false;
+                        femNode.IsSlaveNode = true;
+                        femNode.MasterFEMNode = lastNode;
+                        femNodesOnSegmentSorted.Insert(femNodesOnSegmentSorted.Count - 1, femNode);
+
+                        FEMBarSpring femBar = STRController.CurrentController.DefineFEMBarSpring(femNode, lastNode);
+                        femBar.KUx = release.KUxEnd;
+                        femBar.KUy = release.KUyEnd;
+                        femBar.KUz = release.KUzEnd;
+                        femBar.KRx = release.KRxEnd;
+                        femBar.KRy = release.KRyEnd;
+                        femBar.KRz = release.KRzEnd;
+                        femBar.CorrespondingSTRLine = line;
+                    }
+                }
+
+                // Discritize the strLineinto fembeam based on the nodes on the bar that are sorted
+                for (int j = startIndex; j < endIndex; j++)
+                {
+                    FEMNode femNode1N = femNodesOnSegmentSorted[j];
+                    FEMNode femNode2N = femNodesOnSegmentSorted[j+1];
+                    FEMBarBeam femBar = STRController.CurrentController.DefineFEMBarBeam(femNode1N, femNode2N, line.Section, line.Material);
+                    femBar.CorrespondingSTRLine = line;
+                    line.FEMBars.Add(femBar);
+                }
+            }
         }
+        private static List<STRNode> GetSortedSTRNodes(LineSegment segment)
+        {
+            STRStructure strucutre = STRController.CurrentController.Structure;
+            List<STRNode> nodesOnSegment = new List<STRNode>();
+            List<double> tValues = new List<double>();
+            for (int i = 0; i < strucutre.Nodes.Count; i++)
+            {
+                STRNode node = strucutre.Nodes[i];
+                bool isOnLine = segment.IsOnLineSegment(node.X, node.Y, node.Z);
+                if (isOnLine)
+                {
+                    // paramteric line eq:
+                    // x = at + x0
+                    // y = bt + y0
+                    // z = ct + z0
+                    // find the t value of every point to sort points
+                    nodesOnSegment.Add(node);
+                    double t = segment.GetTValue(node.X, node.Y, node.Z);
+                    tValues.Add(t);
+                }
+            }
+
+            // rearrange points in sorted order
+            List <STRNode> nodesOnSementSorted = new List<STRNode>();
+            List<double> tValuesSorted = new List<double>();
+
+            while (tValues.Count > 0)
+            {
+                int minElementIndex = tValues.IndexOf(tValues.Min());
+                double minValue = tValues[minElementIndex];
+                STRNode minNode = nodesOnSegment[minElementIndex];
+                tValuesSorted.Add(minValue);
+                tValues.RemoveAt(minElementIndex);
+                nodesOnSegment.RemoveAt(minElementIndex);
+            }
+            return nodesOnSementSorted;
+        }
+
         private static void GenerateFEMObjectsFromSTRNodes()
         {
             STRStructure structure = STRController.CurrentController.Structure;
